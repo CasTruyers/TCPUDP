@@ -1,46 +1,23 @@
-#ifdef _WIN32
-    #define _WIN32_WINNT _WIN32_WINNT_WIN7
-    #include <winsock2.h>
-    #include <ws2tcpip.h>
-    #include <stdio.h>
-    #include <unistd.h>
-    #include <stdlib.h>
-    #include <string.h>
-    void OSinit(void)
-    {
-        WSADATA wsaData;
-        WSAstartup(MAKEWORD(2, 0), &wsaData);
-    }
-    void OScleanup(void)
-    {
-        WSACleanup();
-    }
-#else
-    #include <unistd.h>
-    #include <string.h>
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <sys/socket.h>
-    #include <sys/types.h>
-    #include <errno.h>
-    #include <netdb.h>
-    #include <netinet/in.h>
-    #include <arpa/inet.h>
-    void OSinit(void){}
-    void OScleanup(void){}
-#endif
+#include <unistd.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <errno.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 int initialisation();
 void execution();
 void cleanup();
-
+void check();
 
 int main()
 {
-    char ip[] = "192.168.1.4";
+    char ip[] = "127.0.0.1";
     unsigned int amount;
-
-    OSinit();
 
     struct sockaddr* address = NULL;
     socklen_t *address_length = 0;
@@ -107,7 +84,7 @@ void execution(int internet_socket, struct sockaddr *address, socklen_t address_
     int bytes_arrived;
     recvfrom(internet_socket, &bytes_arrived, sizeof(bytes_arrived), 0, address, &address_length);
     printf("\nbytes send: %d\nbytes arrived: %d", bytes_send, bytes_arrived);
-    if(bytes_arrived == bytes_send) printf("\nPackage arrived!\n\n");
+    if(bytes_arrived == bytes_send) printf("\nPackage secured!\n\n");
     else printf("\npackage loss!\n\n");
 
     //Receiving x packages

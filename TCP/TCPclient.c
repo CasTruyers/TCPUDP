@@ -24,9 +24,7 @@ int main()
 
     //EXECUTION
     execution(internet_socket);
-    
-    //CLEANUP
-    cleanup(internet_socket);
+
     return 0;
 }
 
@@ -40,7 +38,7 @@ int initialisation()
     memset(&address_setup, 0, sizeof(address_setup));
     address_setup.ai_family = AF_UNSPEC;
     address_setup.ai_socktype = SOCK_STREAM;
-    check(getaddrinfo("192.168.1.4","24022",&address_setup, &address_result), "addrInfo", 2, NULL);
+    check(getaddrinfo("127.0.0.1","24022",&address_setup, &address_result), "addrInfo", 2, NULL);
 
     //Socket
     int internet_socket = -1;
@@ -84,7 +82,7 @@ void execution(int internet_socket)
         if(bytes_send == -1){perror("send"); exit(3);}
 
         //check for close
-        if( (strcmp(message, "*close") == 0) || (strcmp(message, "*Close") == 0) ) {cleanup(internet_socket); break;}
+        if( (strcmp(message, "*close") == 0) || (strcmp(message, "*Close") == 0) ) {pthread_join(newThread, NULL); cleanup(internet_socket); break;}
 
         //Receive
         
@@ -99,7 +97,7 @@ void *receive(void *internet_socket_ptr)
     {
         int bytes_received  = recv(internet_socket, buffer, sizeof(buffer), 0);
         if(bytes_received == -1){perror("received"); return NULL;}
-        else if(bytes_received == 0) {cleanup(internet_socket); printf("server offline\n"); exit(0);}
+        else if(bytes_received == 0) {cleanup(internet_socket); printf("offline\n"); exit(0);}
         else
         {
             buffer[bytes_received] = '\0';

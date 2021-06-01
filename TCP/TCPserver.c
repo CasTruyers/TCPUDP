@@ -133,6 +133,9 @@ void* execution(void* client_socket_ptr)
             break;
         }
 
+        //print received message
+        printf("received: %s\n", message);
+
         activeUsers = userData[1]-userData[2]; 
 
         //SEND to all active users
@@ -158,7 +161,7 @@ void* execution(void* client_socket_ptr)
 void closeClient(int client_socket)
 {
     //shutdown connection
-    check(shutdown(client_socket, SHUT_RD), "Shutdown", 0, NULL);
+    //check(shutdown(client_socket, SHUT_RD), "Shutdown", 0, NULL);
     
     //close connection
     check(close(client_socket), "Close", 0, NULL);
