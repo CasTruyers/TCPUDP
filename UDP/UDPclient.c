@@ -82,14 +82,16 @@ void execution(int internet_socket, struct sockaddr *address, socklen_t address_
 
     //Securing package arrival
     int bytes_arrived;
-    recvfrom(internet_socket, &bytes_arrived, sizeof(bytes_arrived), 0, address, &address_length);
-    printf("\nbytes send: %d\nbytes arrived: %d", bytes_send, bytes_arrived);
-    if(bytes_arrived == bytes_send) printf("\nPackage secured!\n\n");
-    else printf("\npackage loss!\n\n");
+    int bytes_received = recvfrom(internet_socket, &bytes_arrived, sizeof(bytes_arrived), 0, address, &address_length);
+    if(bytes_received == -1){perror("received"); exit(4);}
+    else printf("Packet:%d, Bytes send: %d, bytes arrived: %d",1, bytes_send, bytes_arrived);
+
+    if(bytes_arrived == bytes_send) printf("\tPackage secured!\n");
+    else printf("\tpackage loss!\n");
 
     //Receiving x packages
     char buffer[1000];
-    for(int i=0; i<amount; i++)
+    for(int i=1; i<amount; i++)
     {
         memset(buffer, 0, sizeof(buffer));
         int bytes_received  = recvfrom(internet_socket, buffer, sizeof(buffer)-1, 0, address, &address_length);

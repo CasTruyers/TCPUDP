@@ -1,34 +1,13 @@
-#ifdef _WIN32
-    #define _WIN32_WINNT _WIN32_WINNT_WIN7
-    #include <winsock2.h>
-    #include <ws2tcpip.h>
-    #include <stdio.h>
-    #include <unistd.h>
-    #include <stdlib.h>
-    #include <string.h>
-    void OSinit(void)
-    {
-        WSADATA wsaData;
-        WSAstartup(MAKEWORD(2, 0), &wsaData);
-    }
-    void OScleanup(void)
-    {
-        WSACleanup();
-    }
-#else
-    #include <unistd.h>
-    #include <string.h>
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <sys/socket.h>
-    #include <sys/types.h>
-    #include <errno.h>
-    #include <netdb.h>
-    #include <netinet/in.h>
-    #include <arpa/inet.h>
-    void OSinit(void){}
-    void OScleanup(void){}
-#endif
+#include <unistd.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <errno.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 int initialisation();
 void execution();
@@ -38,7 +17,6 @@ void cleanup();
 int main()
 {
     char pakket[] = "Een pakket";
-    OSinit();
     char input;
     int c;
     int internet_socket;
@@ -125,7 +103,7 @@ void execution(int internet_socket, char *pakket)
     sendto(internet_socket, &bytes_received, sizeof(bytes_received), 0, (struct sockaddr*)&client_address, client_address_length);
 
     //SEND
-    for(int i=0; i<aantal; i++)
+    for(int i=1; i<aantal; i++)
     {
         int bytes_send = sendto(internet_socket, pakket, strlen(pakket), 0, (struct sockaddr*)&client_address, client_address_length);
         //printf("\nBytes send: %d\n", bytes_send);
